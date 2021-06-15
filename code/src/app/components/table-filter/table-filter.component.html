@@ -1,0 +1,51 @@
+<form [formGroup]='filterForm' (ngSubmit)="filterData()">
+  <fieldset *ngFor="let filterItem of filterItems.controls; let i=index" [formGroup]='filterItem'>
+    <div class="row">
+      <div class="col-sm-12">
+        <label for='column_1'>Column</label>
+      </div>
+      <div class="col-sm-12">
+        <select id='column_1' formControlName='Column'>
+          <option value=''></option>
+          <option *ngFor='let opt of columns' [value]="opt.Name">{{opt.Caption}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <label for='operator_1'>Operator</label>
+      </div>
+      <div class="col-sm-12">
+        <select id='operator_1' formControlName='Operator'>
+          <option value=''></option>
+          <option *ngFor='let opt of operators' [value]="opt.Operator">{{opt.Caption}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <label for='value_1'>Value</label>
+      </div>
+      <div class="col-sm-12">
+        <input type="text" id="value_1" formControlName='Value'>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <button type="button" (click)='addFilterItem()'>+</button>
+      </div>
+      <div class="col-sm-6" *ngIf='filterItems.controls.length > 1'>
+        <button type="button" (click)='removeFilterItem(i)'>del</button>
+      </div>
+    </div>
+
+  </fieldset>
+  <div class="row">
+    <div class="col-sm-12">
+      <button type="submit" [disabled]='!filterForm.valid'>Filter</button>
+    </div>
+  </div>
+</form>

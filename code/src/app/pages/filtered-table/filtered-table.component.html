@@ -1,0 +1,13 @@
+<div class="container">
+  <div class="row">
+    <h2>Filter table</h2>
+  </div>
+  <div class="row">
+    <div class="col-sm-12 col-md-3">
+      <app-table-filter [columns]='columns' [operators]='operators' (startFilter)='getData($event)'></app-table-filter>
+    </div>
+    <div class="col-sm-12 col-md-9">
+      <app-table [items]='items'></app-table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+<table class='full_height_table' *ngIf='items'>
+  <thead>
+    <tr>
+      <th *ngFor='let header of items.Header'>{{header.Caption}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor='let item of items.Body'>
+      <td *ngFor='let column of item.Columns' data-label="{{column.ColumnName}}">{{column.Value}}</td>
+    </tr>
+  </tbody>
+</table>
