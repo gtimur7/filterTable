@@ -4,7 +4,6 @@ import { BodyColumnData, BodyData, TableData } from '../models/table';
 import { FilterItem, FilterOperator } from '../models/filter';
 import { ConfigurationService } from './configuration.service';
 import { environment } from 'src/environments/environment';
-import { rejects } from 'assert';
 
 @Injectable({
   providedIn: 'root'
