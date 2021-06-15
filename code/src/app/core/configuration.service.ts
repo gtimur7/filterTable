@@ -26,7 +26,7 @@ export class ConfigurationService {
       { Operator: FilterOperator.Contains, Caption: 'Contains' },
       { Operator: FilterOperator.Equal, Caption: 'Equals' },
       { Operator: FilterOperator.DoesNotContain, Caption: 'Does Not Contain' },
-    ]
+    ];
     return operators;
   }
 }

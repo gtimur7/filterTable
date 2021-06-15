@@ -12,7 +12,7 @@ export class MainDataService {
   cache: any;
   constructor(private http: HttpClient, private configService: ConfigurationService) { }
 
-  getTableData(filterObject: FilterItem[]): Promise<TableData> { //: Observable<TableData> {
+  getTableData(filterObject: FilterItem[]): Promise<TableData> {
     const getData = new Promise((resolve, reject) => {
       let queryPath = environment.pathToData;
       if (!environment.filterOnClient) {
@@ -36,19 +36,18 @@ export class MainDataService {
       }))
       .then((filtered: any[]) => new Promise((resolve, reject) => {
         const converted = this.convertData(filtered);
-        resolve(converted)
+        resolve(converted);
       }));
   }
 
   private buildFilterString(filter: FilterItem[]): string {
     const result = filter.map((item, index) => {
-      item.Column
       return `column[${index}]=${item.Column}&operator[${index}]=${item.Operator}&value[${index}]=${item.Value}`;
-    }).join('&')
+    }).join('&');
     return '?' + result;
   }
 
-  private convertData(values: any[]) {
+  private convertData(values: any[]): TableData {
     const columns = this.configService.getColumns();
     const bodyValue = values.map(bodyItem => {
       const body: BodyData = { Columns: [] };
@@ -61,9 +60,9 @@ export class MainDataService {
         const bf: BodyColumnData = {
           ColumnName: columnName,
           Value: columnValue
-        }
+        };
         body.Columns.push(bf);
-      })
+      });
       return body;
     });
     const tableData: TableData = {
@@ -73,15 +72,15 @@ export class MainDataService {
     return tableData;
   }
 
-  filterData(data: any[], filterObject: FilterItem[]) {
+  filterData<T>(data: T[], filterObject: FilterItem[]): T[] {
     filterObject.forEach(filterItem => {
       const filterValue = String(filterItem.Value).toLowerCase();
       switch (Number(filterItem.Operator)) {
         case FilterOperator.Equal:
-          data = data.filter(item => String(item[filterItem.Column]).toLowerCase() == filterValue);
+          data = data.filter(item => String(item[filterItem.Column]).toLowerCase() === filterValue);
           break;
         case FilterOperator.NotEqual:
-          data = data.filter(item => String(item[filterItem.Column]).toLowerCase() != filterValue);
+          data = data.filter(item => String(item[filterItem.Column]).toLowerCase() !== filterValue);
           break;
         case FilterOperator.Contains:
           data = data.filter(item => String(item[filterItem.Column]).toLowerCase().indexOf(filterValue) > -1);

@@ -16,15 +16,15 @@ export class FilteredTableComponent implements OnInit {
   operators: FilterOperatorItem[] = [];
 
   constructor(private mainService: MainDataService,
-    private configService: ConfigurationService) { }
+              private configService: ConfigurationService) { }
 
   ngOnInit(): void {
-    this.getData(this.filter);
+    this.loadData(this.filter);
     this.columns = this.configService.getColumns();
     this.operators = this.configService.getOperators();
   }
 
-  getData(filter: FilterItem[]) {
+  loadData(filter: FilterItem[]): void {
     this.mainService.getTableData(filter).then(data => {
       console.log(data);
       this.items = data;
