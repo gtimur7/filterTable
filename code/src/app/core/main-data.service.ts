@@ -1,22 +1,44 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
-import { BodyColumnData, BodyData, HeaderData, TableData } from '../models/table';
+import { BodyColumnData, BodyData, TableData } from '../models/table';
 import { FilterItem, FilterOperator } from '../models/filter';
 import { ConfigurationService } from './configuration.service';
 import { environment } from 'src/environments/environment';
+import { rejects } from 'assert';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MainDataService {
+  cache: any;
   constructor(private http: HttpClient, private configService: ConfigurationService) { }
 
-  getTableData(filter: FilterItem[]): Observable<TableData> {
-    return this.http.get(environment.pathToData + this.buildFilterString(filter)).pipe(
-      map(value => this.converData(value, filter)),
-    );
+  getTableData(filterObject: FilterItem[]): Promise<TableData> { //: Observable<TableData> {
+    const getData = new Promise((resolve, reject) => {
+      let queryPath = environment.pathToData;
+      if (!environment.filterOnClient) {
+        queryPath += this.buildFilterString(filterObject);
+      }
+      if (this.cache && environment.filterOnClient) {
+        resolve(this.cache);
+      } else {
+        this.http.get(queryPath).subscribe(data => {
+          this.cache = data;
+          resolve(this.cache);
+        });
+      }
+    });
+
+    return getData
+      .then(obj => new Promise((resolve, reject) => {
+        const values = Object.values(obj);
+        const filtered = environment.filterOnClient ? this.filterData(values, filterObject) : values;
+        resolve(filtered);
+      }))
+      .then((filtered: any[]) => new Promise((resolve, reject) => {
+        const converted = this.convertData(filtered);
+        resolve(converted)
+      }));
   }
 
   private buildFilterString(filter: FilterItem[]): string {
@@ -27,13 +49,9 @@ export class MainDataService {
     return '?' + result;
   }
 
-  private converData(value, filterObject: FilterItem[]) {
-    const values = Object.values(value)
-    const filtered = this.filterData(values, filterObject);
-    const limitedData = filtered; //.slice(0, 10);
-
+  private convertData(values: any[]) {
     const columns = this.configService.getColumns();
-    const bodyValue = limitedData.map(bodyItem => {
+    const bodyValue = values.map(bodyItem => {
       const body: BodyData = { Columns: [] };
       columns.forEach(column => {
         const columnName = column.Name;
@@ -52,14 +70,12 @@ export class MainDataService {
     const tableData: TableData = {
       Header: columns,
       Body: bodyValue
-
     };
-    return tableData
+    return tableData;
   }
 
   filterData(data: any[], filterObject: FilterItem[]) {
     filterObject.forEach(filterItem => {
-      console.log(filterItem)
       const filterValue = String(filterItem.Value).toLowerCase();
       switch (Number(filterItem.Operator)) {
         case FilterOperator.Equal:

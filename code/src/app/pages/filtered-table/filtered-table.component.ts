@@ -25,7 +25,7 @@ export class FilteredTableComponent implements OnInit {
   }
 
   getData(filter: FilterItem[]) {
-    this.mainService.getTableData(filter).subscribe(data => {
+    this.mainService.getTableData(filter).then(data => {
       console.log(data);
       this.items = data;
     });

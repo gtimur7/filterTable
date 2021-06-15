@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  pathToData: 'assets/table_data.json'
+  pathToData: 'assets/table_data.json',
+  filterOnClient: true,
 };
 
 /*
