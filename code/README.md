@@ -1,13 +1,26 @@
 # FilterTable
 
-## Before
-run `npm install`
+## Before all
+
+```
+npm install
+```
 
 ## Development server
-run `ng s`
+
+```
+ng s
+```
 
 ## Build for prod
-run `ng build --prod`
+
+```
+ng build --prod
+```
 
 ## Build for GitHub pages
-run `ng build --prod --base-href /filterTable/demo/`
+
+
+```
+ng build --prod --base-href /filterTable/demo/
+```
